@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Cola de prova - Sistemas Distribuidos - post-its com palavras-chave e explicacoes rapidas, separados por aula.">
+<title>Cola de Prova — Sistemas Distribuídos</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Caveat:wght@500;600;700&display=swap">
+<style>
+  :root{
+    --bg: #efe9dc;
+    --board: #e4dcc8;
+    --text: #2a2410;
+    --text-muted: #6b6248;
+    --accent: #2c4bdb;
+    --accent-ink: #1d3399;
+    --shadow: 0 6px 14px -6px rgba(30,24,0,0.35), 0 2px 4px rgba(30,24,0,0.18);
+    --tape: rgba(255,255,255,0.55);
+
+    --c1: #fff3a3; --c1b: #f4e26a;
+    --c2: #c9f0c6; --c2b: #a3e39d;
+    --c3: #bfe0ff; --c3b: #8fc4f5;
+    --c4: #ffd7ad; --c4b: #ffb877;
+    --c5: #e6c9ff; --c5b: #cf9bff;
+    --c6: #b6ece2; --c6b: #7fdcca;
+    --c7: #ffc6d9; --c7b: #ff96b8;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg: #1c1710;
+      --board: #241d13;
+      --text: #f1ead8;
+      --text-muted: #b6ac93;
+      --accent: #93a9ff;
+      --accent-ink: #c2ceff;
+      --shadow: 0 6px 16px -6px rgba(0,0,0,0.6), 0 2px 6px rgba(0,0,0,0.4);
+      --tape: rgba(255,255,255,0.12);
+
+      --c1: #6b5d1f; --c1b: #8c7a28;
+      --c2: #2f5c37; --c2b: #3d7a48;
+      --c3: #2b4b70; --c3b: #3a6493;
+      --c4: #7a4a1f; --c4b: #9c611f;
+      --c5: #55366f; --c5b: #6d4790;
+      --c6: #1f5f52; --c6b: #297c6c;
+      --c7: #6f2f45; --c7b: #8f3d59;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg: #1c1710; --board: #241d13; --text: #f1ead8; --text-muted: #b6ac93;
+    --accent: #93a9ff; --accent-ink: #c2ceff;
+    --shadow: 0 6px 16px -6px rgba(0,0,0,0.6), 0 2px 6px rgba(0,0,0,0.4);
+    --tape: rgba(255,255,255,0.12);
+    --c1: #6b5d1f; --c1b: #8c7a28; --c2: #2f5c37; --c2b: #3d7a48;
+    --c3: #2b4b70; --c3b: #3a6493; --c4: #7a4a1f; --c4b: #9c611f;
+    --c5: #55366f; --c5b: #6d4790; --c6: #1f5f52; --c6b: #297c6c;
+    --c7: #6f2f45; --c7b: #8f3d59;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(0,0,0,0.06) 1px, transparent 0);
+    background-size: 18px 18px;
+    color:var(--text);
+    font-family:'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+    line-height:1.45;
+    padding-inline:16px;
+  }
+  .wrap{max-width:1180px; margin:0 auto; padding-block:36px 80px;}
+
+  header.top{margin-bottom:28px;}
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--accent);
+    font-weight:600;
+  }
+  h1{
+    font-family:'Fraunces', Georgia, serif;
+    font-weight:700;
+    font-size:clamp(1.8rem, 4.4vw, 2.5rem);
+    margin:8px 0 10px;
+    text-wrap:balance;
+  }
+  header.top p{color:var(--text-muted); max-width:62ch; margin:0 0 14px;}
+  .backlink{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.78rem;
+    color:var(--accent-ink);
+    text-decoration:none;
+    border:1px solid var(--accent-ink);
+    border-radius:999px;
+    padding:5px 12px;
+  }
+  .backlink:hover{background:var(--accent-ink); color:var(--bg);}
+
+  nav.jump{
+    display:flex; flex-wrap:wrap; gap:8px;
+    margin:20px 0 8px;
+  }
+  nav.jump a{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.74rem;
+    text-decoration:none;
+    color:var(--text);
+    background:var(--board);
+    border:1px solid rgba(0,0,0,0.15);
+    border-radius:7px;
+    padding:5px 10px;
+  }
+  nav.jump a:hover{color:var(--accent-ink); border-color:var(--accent-ink);}
+
+  .board{
+    background:var(--board);
+    border-radius:16px;
+    padding:26px 22px 30px;
+    margin:36px 0;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
+    scroll-margin-top:16px;
+  }
+  .board-head{
+    display:flex; align-items:baseline; gap:12px; flex-wrap:wrap;
+    margin-bottom:18px;
+  }
+  .board-head h2{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:1.4rem;
+    margin:0;
+  }
+  .board-head .num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.8rem;
+    color:var(--accent);
+    font-weight:600;
+  }
+  .board-head .count{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    color:var(--text-muted);
+    margin-left:auto;
+  }
+
+  .notes{
+    columns: 4 200px;
+    column-gap: 14px;
+  }
+  @media (max-width:900px){ .notes{ columns: 2 160px; } }
+  @media (max-width:520px){ .notes{ columns: 1; } }
+
+  .note{
+    break-inside: avoid;
+    display:inline-block;
+    width:100%;
+    margin:0 0 14px;
+    padding:14px 14px 12px;
+    border-radius:3px 3px 8px 8px;
+    box-shadow:var(--shadow);
+    position:relative;
+    font-size:0.86rem;
+  }
+  .note::before{
+    content:"";
+    position:absolute;
+    top:-8px; left:50%;
+    width:52px; height:16px;
+    margin-left:-26px;
+    background:var(--tape);
+    transform:rotate(-2deg);
+    border-radius:2px;
+  }
+  .note .kw{
+    display:block;
+    font-family:'Caveat', 'Fraunces', cursive;
+    font-weight:700;
+    font-size:1.28rem;
+    line-height:1.15;
+    margin-bottom:4px;
+  }
+  .note p{margin:0; color:rgba(0,0,0,0.72);}
+  :root[data-theme="dark"] .note p{ color:rgba(255,255,255,0.82); }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) .note p{ color:rgba(255,255,255,0.82); }
+  }
+  .note code{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.82em;
+    background:rgba(0,0,0,0.08);
+    padding:1px 4px;
+    border-radius:3px;
+  }
+
+  .note.r1{transform:rotate(-1.4deg);}
+  .note.r2{transform:rotate(1.1deg);}
+  .note.r3{transform:rotate(-0.6deg);}
+  .note.r4{transform:rotate(1.6deg);}
+  .note.r5{transform:rotate(-1.9deg);}
+  .note.r6{transform:rotate(0.4deg);}
+
+  #s1 .note{background:var(--c1); border-bottom:4px solid var(--c1b);}
+  #s2 .note{background:var(--c2); border-bottom:4px solid var(--c2b);}
+  #s3 .note{background:var(--c3); border-bottom:4px solid var(--c3b);}
+  #s4 .note{background:var(--c4); border-bottom:4px solid var(--c4b);}
+  #s5 .note{background:var(--c5); border-bottom:4px solid var(--c5b);}
+  #s6 .note{background:var(--c6); border-bottom:4px solid var(--c6b);}
+  #extra .note{background:var(--c7); border-bottom:4px solid var(--c7b);}
+
+  .callout{
+    font-size:0.86rem;
+    color:var(--text-muted);
+    background:rgba(0,0,0,0.04);
+    border-left:3px solid var(--accent);
+    border-radius:0 8px 8px 0;
+    padding:10px 14px;
+    margin:14px 0 0;
+  }
+
+  footer{
+    margin-top:50px;
+    padding-top:18px;
+    border-top:1px solid rgba(0,0,0,0.12);
+    color:var(--text-muted);
+    font-size:0.8rem;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <span class="eyebrow">Sistemas Distribuídos · Cola de prova</span>
+    <h1>Post-its de revisão — palavra-chave + explicação rápida</h1>
+    <p>Resumo ultrarrápido, separado por aula. Cada post-it é um termo que costuma cair em prova: leia a palavra-chave, tente lembrar a explicação de cabeça, depois confira. Para o resumo completo com questões, veja a página principal.</p>
+    <a class="backlink" href="index.html">← Voltar para o resumo completo</a>
+    <nav class="jump" aria-label="Ir para">
+      <a href="#s1">Aula 1</a>
+      <a href="#s2">Aula 2</a>
+      <a href="#s3">Aula 3</a>
+      <a href="#s4">Aula 4</a>
+      <a href="#s5">Aula 5</a>
+      <a href="#s6">Aula 6</a>
+      <a href="#extra">8 falácias</a>
+    </nav>
+  </header>
+
+  <section class="board" id="s1">
+    <div class="board-head">
+      <span class="num">Aula 1</span>
+      <h2>Fundamentos — processos, threads e sistemas distribuídos</h2>
+      <span class="count">13 termos</span>
+    </div>
+    <div class="notes">
+      <div class="note r1"><span class="kw">Processo</span><p>Programa em execução, memória própria.</p></div>
+      <div class="note r2"><span class="kw">Thread</span><p>Fluxo de execução dentro de um processo; compartilha memória com as outras threads dele.</p></div>
+      <div class="note r3"><span class="kw">Concorrência</span><p>Progresso sobreposto no tempo. Não exige simultaneidade real.</p></div>
+      <div class="note r4"><span class="kw">Paralelismo</span><p>Execução realmente ao mesmo tempo, em múltiplos núcleos/processadores.</p></div>
+      <div class="note r5"><span class="kw">Memória compartilhada</span><p>Comunicação via mesmo espaço de memória — só entre threads do mesmo processo.</p></div>
+      <div class="note r6"><span class="kw">Troca de mensagens</span><p>Comunicação por envio/recebimento explícito. Única forma entre máquinas diferentes.</p></div>
+      <div class="note r2"><span class="kw">Sistema distribuído</span><p>Máquinas independentes, comunicam-se só por mensagens, parecem um sistema único.</p></div>
+      <div class="note r1"><span class="kw">Sem memória global</span><p>Cada máquina só enxerga sua própria memória.</p></div>
+      <div class="note r4"><span class="kw">Sem relógio global</span><p>Não existe um tempo único compartilhado entre as máquinas.</p></div>
+      <div class="note r3"><span class="kw">Falha parcial</span><p>Uma parte do sistema falha, o resto continua rodando — o outro lado nem sempre sabe.</p></div>
+      <div class="note r5"><span class="kw">Heterogeneidade</span><p>Hardware, SO e linguagens diferentes coexistindo no mesmo sistema.</p></div>
+      <div class="note r6"><span class="kw">Escalabilidade</span><p>Crescer (mais usuários/nós) sem degradar o sistema.</p></div>
+      <div class="note r1"><span class="kw">Transparência</span><p>Esconder do usuário que o sistema é distribuído (de localização, de falha, de acesso...).</p></div>
+    </div>
+  </section>
+
+  <section class="board" id="s2">
+    <div class="board-head">
+      <span class="num">Aula 2</span>
+      <h2>Arquiteturas e sockets</h2>
+      <span class="count">14 termos</span>
+    </div>
+    <div class="notes">
+      <div class="note r2"><span class="kw">Cliente-servidor</span><p>Cliente pede, servidor responde. Arquitetura mais básica.</p></div>
+      <div class="note r3"><span class="kw">Multi-tier</span><p>Camadas separadas: apresentação, lógica de negócio, dados.</p></div>
+      <div class="note r4"><span class="kw">P2P</span><p>Todo nó é cliente e servidor ao mesmo tempo, sem servidor central fixo.</p></div>
+      <div class="note r5"><span class="kw">Servidor iterativo</span><p>Atende um cliente de cada vez, em sequência.</p></div>
+      <div class="note r6"><span class="kw">Servidor concorrente</span><p>Atende vários clientes ao mesmo tempo (thread/processo por conexão).</p></div>
+      <div class="note r1"><span class="kw">Síncrono</span><p>Quem envia espera a resposta antes de continuar.</p></div>
+      <div class="note r3"><span class="kw">Assíncrono</span><p>Quem envia não espera — segue em frente e trata a resposta depois.</p></div>
+      <div class="note r2"><span class="kw">Bloqueante</span><p>A chamada trava a thread/execução até terminar.</p></div>
+      <div class="note r4"><span class="kw">IP</span><p>Endereço da máquina na rede.</p></div>
+      <div class="note r5"><span class="kw">Porta</span><p>Identifica o processo/serviço específico dentro da máquina.</p></div>
+      <div class="note r6"><span class="kw">Socket</span><p>Par IP + porta; ponto de comunicação de uma aplicação.</p></div>
+      <div class="note r1"><span class="kw">TCP</span><p>Orientado a conexão, confiável, ordenado — mas mais lento.</p></div>
+      <div class="note r2"><span class="kw">UDP</span><p>Sem conexão, não confiável, sem ordem garantida — mais rápido.</p></div>
+      <div class="note r3"><span class="kw">Delimitação de mensagem</span><p>TCP é um fluxo contínuo de bytes — a aplicação precisa definir onde uma mensagem começa/termina.</p></div>
+    </div>
+  </section>
+
+  <section class="board" id="s3">
+    <div class="board-head">
+      <span class="num">Aula 3</span>
+      <h2>RPC e Java RMI</h2>
+      <span class="count">14 termos</span>
+    </div>
+    <div class="notes">
+      <div class="note r4"><span class="kw">RPC</span><p>Chamada a um serviço remoto que parece uma chamada de função local.</p></div>
+      <div class="note r5"><span class="kw">Stub</span><p>Representante local (proxy) do serviço remoto, do lado do cliente.</p></div>
+      <div class="note r6"><span class="kw">Skeleton</span><p>Do lado do servidor: desempacota a chamada e aciona o método real.</p></div>
+      <div class="note r1"><span class="kw">Marshalling</span><p>Empacotar método + parâmetros + metadados numa mensagem.</p></div>
+      <div class="note r2"><span class="kw">Serialização</span><p>Converter um objeto no seu estado em bytes.</p></div>
+      <div class="note r3"><span class="kw">Passagem por valor</span><p>Objeto <code>Serializable</code> é copiado — mudanças no destino não afetam o original.</p></div>
+      <div class="note r4"><span class="kw">Passagem por referência remota</span><p>Objeto <code>Remote</code>; o cliente recebe um stub que aponta pro objeto real.</p></div>
+      <div class="note r5"><span class="kw">RMI Registry</span><p>Diretório nome → referência remota. Servidor faz <code>bind</code>, cliente faz <code>lookup</code>.</p></div>
+      <div class="note r6"><span class="kw">RemoteException</span><p>Toda chamada remota pode lançar — a rede pode falhar de jeitos que não existem localmente.</p></div>
+      <div class="note r1"><span class="kw">At-most-once</span><p>A operação executa, no máximo, uma vez.</p></div>
+      <div class="note r2"><span class="kw">At-least-once</span><p>A operação pode executar mais de uma vez (reenvio).</p></div>
+      <div class="note r3"><span class="kw">Maybe</span><p>Nenhuma garantia — pode não executar, executar uma vez ou mais.</p></div>
+      <div class="note r4"><span class="kw">Idempotência</span><p>Repetir a operação leva ao mesmo estado final.</p></div>
+      <div class="note r5"><span class="kw">Granularidade</span><p>Chamadas remotas devem ser poucas e "gordas", não muitas e "finas" — cada uma tem custo de rede.</p></div>
+    </div>
+  </section>
+
+  <section class="board" id="s4">
+    <div class="board-head">
+      <span class="num">Aula 4</span>
+      <h2>Web, REST e microsserviços</h2>
+      <span class="count">15 termos</span>
+    </div>
+    <div class="notes">
+      <div class="note r6"><span class="kw">HTTP</span><p>Protocolo requisição/resposta em texto — base da web.</p></div>
+      <div class="note r1"><span class="kw">GET</span><p>Ler um recurso. Idempotente.</p></div>
+      <div class="note r2"><span class="kw">POST</span><p>Criar um recurso novo. <strong>Não</strong> idempotente.</p></div>
+      <div class="note r3"><span class="kw">PUT</span><p>Substituir/atualizar por completo. Idempotente.</p></div>
+      <div class="note r4"><span class="kw">DELETE</span><p>Remover. Idempotente (repetir dá o mesmo estado final).</p></div>
+      <div class="note r5"><span class="kw">2xx / 4xx / 5xx</span><p>Sucesso / erro do cliente / erro do servidor. Ex: 200, 201, 400, 404, 500.</p></div>
+      <div class="note r6"><span class="kw">REST</span><p>Recursos + verbos HTTP + JSON, fracamente acoplado.</p></div>
+      <div class="note r1"><span class="kw">Stateless</span><p>Servidor não guarda a conversa entre requisições — cada uma carrega o que precisa.</p></div>
+      <div class="note r2"><span class="kw">URI bem-feita</span><p>Substantivo no plural (<code>/produtos</code>), sem verbo (nada de <code>/getProdutos</code>).</p></div>
+      <div class="note r3"><span class="kw">gRPC</span><p>Contrato explícito (<code>.proto</code>), tipado, rápido — parecido com RMI.</p></div>
+      <div class="note r4"><span class="kw">REST × RPC</span><p>REST é desacoplado e interoperável; RPC/gRPC é mais acoplado ao contrato, porém mais rápido/tipado.</p></div>
+      <div class="note r5"><span class="kw">Microsserviços</span><p>Sistema dividido em serviços pequenos e independentes.</p></div>
+      <div class="note r6"><span class="kw">API Gateway</span><p>Porta única de entrada: roteamento, autenticação, rate limiting.</p></div>
+      <div class="note r1"><span class="kw">Container / Docker</span><p>Empacota o serviço com suas dependências — portátil e isolado.</p></div>
+      <div class="note r2"><span class="kw">201 Created</span><p>Vem com header <code>Location</code> apontando pro recurso novo.</p></div>
+    </div>
+  </section>
+
+  <section class="board" id="s5">
+    <div class="board-head">
+      <span class="num">Aula 5</span>
+      <h2>Comunicação orientada a mensagens</h2>
+      <span class="count">15 termos</span>
+    </div>
+    <div class="notes">
+      <div class="note r3"><span class="kw">Direta</span><p>Sem intermediário — os dois lados precisam estar disponíveis ao mesmo tempo.</p></div>
+      <div class="note r4"><span class="kw">Indireta</span><p>Via fila/broker — desacopla tempo, espaço e sincronismo.</p></div>
+      <div class="note r5"><span class="kw">Broker</span><p>Recebe → armazena → roteia → entrega → monitora.</p></div>
+      <div class="note r6"><span class="kw">Work queue</span><p>Cada mensagem é processada por só 1 consumidor — escala horizontal.</p></div>
+      <div class="note r1"><span class="kw">Publish/subscribe</span><p>Um evento pode chegar a múltiplos assinantes/filas.</p></div>
+      <div class="note r2"><span class="kw">Exchange fanout</span><p>Manda para todas as filas vinculadas (típico de pub/sub).</p></div>
+      <div class="note r3"><span class="kw">Exchange direct</span><p>Roteia por chave exata (típico de work queue).</p></div>
+      <div class="note r4"><span class="kw">Exchange topic</span><p>Roteia por padrão de chave.</p></div>
+      <div class="note r5"><span class="kw">ACK</span><p>Confirmação de que a mensagem foi processada com sucesso.</p></div>
+      <div class="note r6"><span class="kw">autoAck=true</span><p>Risco: confirma antes de processar — pode perder mensagem se falhar.</p></div>
+      <div class="note r1"><span class="kw">Redelivered</span><p>Mensagem volta pra fila se o consumidor falhar antes do ACK.</p></div>
+      <div class="note r2"><span class="kw">Idempotência (mensageria)</span><p>Consumidor não pode duplicar efeito ao receber a mesma mensagem de novo.</p></div>
+      <div class="note r3"><span class="kw">Stream / log</span><p>Registro append-only; permite reler o histórico (replay).</p></div>
+      <div class="note r4"><span class="kw">Comando</span><p>Expressa uma intenção, pode falhar, tem destinatário. Ex: <code>ReservarEstoque</code>.</p></div>
+      <div class="note r5"><span class="kw">Evento</span><p>Expressa um fato já ocorrido, não "falha", vários podem reagir. Ex: <code>PedidoCriado</code>.</p></div>
+    </div>
+  </section>
+
+  <section class="board" id="s6">
+    <div class="board-head">
+      <span class="num">Aula 6</span>
+      <h2>Nomeação, localização e descoberta</h2>
+      <span class="count">16 termos</span>
+    </div>
+    <div class="notes">
+      <div class="note r6"><span class="kw">Nome</span><p>Como nos referimos à entidade (ex.: <code>pedido-service</code>).</p></div>
+      <div class="note r1"><span class="kw">Identificador</span><p>Único e estável, distingue a entidade (ex.: UUID).</p></div>
+      <div class="note r2"><span class="kw">Endereço</span><p>Onde a entidade está agora (ex.: <code>10.0.0.17:8080</code>).</p></div>
+      <div class="note r3"><span class="kw">Binding</span><p>Associação nome → endereço/referência. Pode mudar sem mudar o nome.</p></div>
+      <div class="note r4"><span class="kw">Domínio</span><p>Parte lógica da árvore DNS (um nó + descendentes).</p></div>
+      <div class="note r5"><span class="kw">Zona</span><p>Unidade administrativa publicada por servidores autoritativos.</p></div>
+      <div class="note r6"><span class="kw">Delegação (NS)</span><p>Aponta quem é autoritativo por uma subzona — permite administração distribuída.</p></div>
+      <div class="note r1"><span class="kw">Resolução recursiva</span><p>Cliente → resolvedor: "descubra a resposta final para mim".</p></div>
+      <div class="note r2"><span class="kw">Resolução iterativa</span><p>Resolvedor → raiz → TLD → autoritativo: cada um responde "consulte o próximo".</p></div>
+      <div class="note r3"><span class="kw">Cache / TTL</span><p>Por quanto tempo uma resposta pode ser reaproveitada. Trade-off: TTL alto = menos consultas, mudança demora mais.</p></div>
+      <div class="note r4"><span class="kw">Registro A / CNAME / MX</span><p>A: nome→IPv4. CNAME: nome→outro nome. MX: nome→servidor de e-mail.</p></div>
+      <div class="note r5"><span class="kw">Service registry</span><p>Nome lógico → conjunto de instâncias + metadados/saúde.</p></div>
+      <div class="note r6"><span class="kw">Health check / lease</span><p>Teste ativo do endpoint / registro expira se não for renovado (heartbeat).</p></div>
+      <div class="note r1"><span class="kw">Client-side discovery</span><p>O próprio cliente escolhe a instância, a partir da lista do registry.</p></div>
+      <div class="note r2"><span class="kw">Server-side discovery</span><p>Um proxy/load balancer escolhe a instância — cliente nem sabe que há escolha.</p></div>
+      <div class="note r3"><span class="kw">DHT (Chord)</span><p>Localiza sem diretório central: <code>hash(chave) → nó responsável</code>.</p></div>
+    </div>
+  </section>
+
+  <section class="board" id="extra">
+    <div class="board-head">
+      <span class="num">Simulado</span>
+      <h2>Temas do simulado que ainda vale revisar</h2>
+      <span class="count">6 termos</span>
+    </div>
+    <div class="notes">
+      <div class="note r4"><span class="kw">8 falácias da computação distribuída</span><p>Suposições erradas e comuns: rede é confiável, latência é zero, banda é infinita, rede é segura, topologia não muda, há um administrador só, custo de transporte é zero, a rede é homogênea.</p></div>
+      <div class="note r5"><span class="kw">Rede não é confiável</span><p>Pacotes se perdem, chegam fora de ordem ou duplicados — é preciso tratar isso na aplicação.</p></div>
+      <div class="note r6"><span class="kw">Latência ≠ zero</span><p>Toda chamada remota tem custo de tempo, mesmo em redes rápidas — impacta design de granularidade.</p></div>
+      <div class="note r1"><span class="kw">Banda não é infinita</span><p>Transferir muitos dados tem custo real — payloads grandes/frequentes competem por banda.</p></div>
+      <div class="note r2"><span class="kw">Rede não é segura</span><p>É preciso autenticação, autorização e criptografia — nada disso é automático.</p></div>
+      <div class="note r3"><span class="kw">Topologia muda</span><p>Máquinas saem, entram, mudam de endereço — por isso nomeação/descoberta (Aula 6) importa tanto.</p></div>
+    </div>
+    <div class="callout">Essas "8 falácias" apareceram no simulado de uma turma anterior mesmo sem estarem nos slides — vale a pena conhecer os nomes, é um tema clássico da disciplina.</div>
+  </section>
+
+  <footer>
+    Cola de revisão baseada no resumo completo de Sistemas Distribuídos (Aulas 1–6, Prof. Hercio M. Ferraro Neto). Feita para revisão rápida — para explicações completas e questões, use a <a href="index.html" style="color:inherit;">página principal</a>.
+  </footer>
+
+</div>
+</body>
+</html>
