@@ -244,7 +244,8 @@
       <a href="#s4">Aula 4</a>
       <a href="#s5">Aula 5</a>
       <a href="#s6">Aula 6</a>
-      <a href="#extra">8 falácias</a>
+      <a href="#tradeoffs">Trade-offs</a>
+      <a href="#extra">Além das aulas</a>
     </nav>
   </header>
 
@@ -252,7 +253,7 @@
     <div class="board-head">
       <span class="num">Aula 1</span>
       <h2>Fundamentos — processos, threads e sistemas distribuídos</h2>
-      <span class="count">13 termos</span>
+      <span class="count">14 termos</span>
     </div>
     <div class="notes">
       <div class="note r1"><span class="kw">Processo</span><p>Programa em execução, memória própria.</p></div>
@@ -268,6 +269,7 @@
       <div class="note r5"><span class="kw">Heterogeneidade</span><p>Hardware, SO e linguagens diferentes coexistindo no mesmo sistema.</p></div>
       <div class="note r6"><span class="kw">Escalabilidade</span><p>Crescer (mais usuários/nós) sem degradar o sistema.</p></div>
       <div class="note r1"><span class="kw">Transparência</span><p>Esconder do usuário que o sistema é distribuído (de localização, de falha, de acesso...).</p></div>
+      <div class="note r4"><span class="kw">Abertura (openness)</span><p>Interfaces públicas e documentadas, que permitem interoperar com outros sistemas — não confundir com heterogeneidade nem transparência (a prova adora trocar essas três).</p></div>
     </div>
   </section>
 
@@ -275,7 +277,7 @@
     <div class="board-head">
       <span class="num">Aula 2</span>
       <h2>Arquiteturas e sockets</h2>
-      <span class="count">14 termos</span>
+      <span class="count">16 termos</span>
     </div>
     <div class="notes">
       <div class="note r2"><span class="kw">Cliente-servidor</span><p>Cliente pede, servidor responde. Arquitetura mais básica.</p></div>
@@ -292,6 +294,9 @@
       <div class="note r1"><span class="kw">TCP</span><p>Orientado a conexão, confiável, ordenado — mas mais lento.</p></div>
       <div class="note r2"><span class="kw">UDP</span><p>Sem conexão, não confiável, sem ordem garantida — mais rápido.</p></div>
       <div class="note r3"><span class="kw">Delimitação de mensagem</span><p>TCP é um fluxo contínuo de bytes — a aplicação precisa definir onde uma mensagem começa/termina.</p></div>
+      <div class="note r4"><span class="kw">Sequência no servidor (TCP)</span><p><code>ServerSocket</code> → <code>accept()</code> devolve um <code>Socket</code> → read/write nesse <code>Socket</code> → <code>close()</code>.</p></div>
+      <div class="note r5"><span class="kw">Sequência no cliente (TCP)</span><p><code>Socket</code> → <code>connect</code> → read/write → <code>close()</code>.</p></div>
+      <div class="note r6"><span class="kw">Quando usar UDP</span><p>Ex. clássico: streaming de vídeo ao vivo, onde atraso importa mais do que perder alguns pacotes.</p></div>
     </div>
   </section>
 
@@ -323,7 +328,7 @@
     <div class="board-head">
       <span class="num">Aula 4</span>
       <h2>Web, REST e microsserviços</h2>
-      <span class="count">15 termos</span>
+      <span class="count">16 termos</span>
     </div>
     <div class="notes">
       <div class="note r6"><span class="kw">HTTP</span><p>Protocolo requisição/resposta em texto — base da web.</p></div>
@@ -341,6 +346,7 @@
       <div class="note r6"><span class="kw">API Gateway</span><p>Porta única de entrada: roteamento, autenticação, rate limiting.</p></div>
       <div class="note r1"><span class="kw">Container / Docker</span><p>Empacota o serviço com suas dependências — portátil e isolado.</p></div>
       <div class="note r2"><span class="kw">201 Created</span><p>Vem com header <code>Location</code> apontando pro recurso novo.</p></div>
+      <div class="note r3"><span class="kw">REST é cacheável</span><p>Respostas REST podem ser cacheadas — isso É uma característica do REST. Stub/proxy local (esconder a rede) é característica de RPC/RMI, <strong>não</strong> de REST.</p></div>
     </div>
   </section>
 
@@ -348,7 +354,7 @@
     <div class="board-head">
       <span class="num">Aula 5</span>
       <h2>Comunicação orientada a mensagens</h2>
-      <span class="count">15 termos</span>
+      <span class="count">17 termos</span>
     </div>
     <div class="notes">
       <div class="note r3"><span class="kw">Direta</span><p>Sem intermediário — os dois lados precisam estar disponíveis ao mesmo tempo.</p></div>
@@ -366,6 +372,7 @@
       <div class="note r3"><span class="kw">Stream / log</span><p>Registro append-only; permite reler o histórico (replay).</p></div>
       <div class="note r4"><span class="kw">Comando</span><p>Expressa uma intenção, pode falhar, tem destinatário. Ex: <code>ReservarEstoque</code>.</p></div>
       <div class="note r5"><span class="kw">Evento</span><p>Expressa um fato já ocorrido, não "falha", vários podem reagir. Ex: <code>PedidoCriado</code>.</p></div>
+      <div class="note r6"><span class="kw">Mensageria × RMI/RPC</span><p>Use mensageria quando o produtor <strong>não precisa esperar</strong> o consumidor (processamento em segundo plano). Use RMI/RPC quando precisa do resultado <strong>na hora</strong>.</p></div>
     </div>
   </section>
 
@@ -395,21 +402,44 @@
     </div>
   </section>
 
-  <section class="board" id="extra">
+  <section class="board" id="tradeoffs">
     <div class="board-head">
-      <span class="num">Simulado</span>
-      <h2>Temas do simulado que ainda vale revisar</h2>
+      <span class="num">Trade-offs</span>
+      <h2>Trade-offs clássicos de sistemas distribuídos</h2>
       <span class="count">6 termos</span>
     </div>
     <div class="notes">
-      <div class="note r4"><span class="kw">8 falácias da computação distribuída</span><p>Suposições erradas e comuns: rede é confiável, latência é zero, banda é infinita, rede é segura, topologia não muda, há um administrador só, custo de transporte é zero, a rede é homogênea.</p></div>
+      <div class="note r1"><span class="kw">Regra geral</span><p>Toda técnica que resolve um problema costuma criar outro. A prova adora pedir o lado negativo de cada técnica — não só a vantagem.</p></div>
+      <div class="note r2"><span class="kw">Cache</span><p><strong>Reduz</strong> a latência percebida (não aumenta). Custo: dado pode ficar desatualizado enquanto está em cache.</p></div>
+      <div class="note r3"><span class="kw">Replicação</span><p>Aumenta a tolerância a falhas, mas torna a consistência entre réplicas <strong>mais difícil</strong> de manter (não mais fácil).</p></div>
+      <div class="note r4"><span class="kw">Criptografia</span><p>Aumenta a segurança, mas <strong>aumenta</strong> o overhead de processamento (não reduz).</p></div>
+      <div class="note r5"><span class="kw">Transparência em excesso</span><p>Esconde complexidade real do usuário, mas <strong>dificulta</strong> o diagnóstico de falhas em produção (não facilita).</p></div>
+      <div class="note r6"><span class="kw">Microsserviços</span><p>Ganha escalabilidade e autonomia de deploy; perde em complexidade de comunicação e observabilidade entre serviços.</p></div>
+    </div>
+    <div class="callout">Padrão de pegadinha da prova: a alternativa erra invertendo a consequência (diz "facilita" quando é "dificulta", ou "reduz" quando é "aumenta"). Leia a frase inteira com atenção antes de marcar.</div>
+  </section>
+
+  <section class="board" id="extra">
+    <div class="board-head">
+      <span class="num">Além das aulas</span>
+      <h2>Temas do simulado que vão além do que os slides cobrem</h2>
+      <span class="count">12 termos</span>
+    </div>
+    <div class="notes">
+      <div class="note r4"><span class="kw">As 8 falácias (lista completa)</span><p>1) Rede é confiável · 2) Latência é zero · 3) Banda é infinita · 4) Rede é segura · 5) Topologia nunca muda · 6) Existe um administrador só · 7) Custo de transporte é zero · 8) Rede é homogênea.</p></div>
       <div class="note r5"><span class="kw">Rede não é confiável</span><p>Pacotes se perdem, chegam fora de ordem ou duplicados — é preciso tratar isso na aplicação.</p></div>
       <div class="note r6"><span class="kw">Latência ≠ zero</span><p>Toda chamada remota tem custo de tempo, mesmo em redes rápidas — impacta design de granularidade.</p></div>
       <div class="note r1"><span class="kw">Banda não é infinita</span><p>Transferir muitos dados tem custo real — payloads grandes/frequentes competem por banda.</p></div>
       <div class="note r2"><span class="kw">Rede não é segura</span><p>É preciso autenticação, autorização e criptografia — nada disso é automático.</p></div>
       <div class="note r3"><span class="kw">Topologia muda</span><p>Máquinas saem, entram, mudam de endereço — por isso nomeação/descoberta (Aula 6) importa tanto.</p></div>
+      <div class="note r4"><span class="kw">Custo de transporte ≠ zero</span><p>Empacotar, enviar e desempacotar dados tem custo real de CPU e rede, mesmo em payloads pequenos.</p></div>
+      <div class="note r5"><span class="kw">Rede não é homogênea</span><p>Hardware, protocolos e enlaces diferentes coexistem na mesma rede — nem tudo se comporta igual.</p></div>
+      <div class="note r6"><span class="kw">Churn (P2P)</span><p>Fenômeno de nós entrando e saindo da rede com frequência — o contrário de "nós fixos por longos períodos".</p></div>
+      <div class="note r1"><span class="kw">Blockchain</span><p>Depende de mecanismo de consenso entre os nós para validar transações — não dispensa isso.</p></div>
+      <div class="note r2"><span class="kw">P2P × cliente-servidor</span><p>P2P tende a ser <strong>mais</strong> tolerante a falhas que um modelo centralizado — não tem ponto único de falha.</p></div>
+      <div class="note r3"><span class="kw">DHT</span><p>Localiza recursos por chave, de forma distribuída, sem servidor central (ex.: Chord).</p></div>
     </div>
-    <div class="callout">Essas "8 falácias" apareceram no simulado de uma turma anterior mesmo sem estarem nos slides — vale a pena conhecer os nomes, é um tema clássico da disciplina.</div>
+    <div class="callout">Esses temas (8 falácias, P2P/churn/blockchain) apareceram no simulado de uma turma anterior mesmo sem estarem detalhados nos slides — vale a pena conhecer pelo menos os nomes, é assunto clássico da disciplina.</div>
   </section>
 
   <footer>
